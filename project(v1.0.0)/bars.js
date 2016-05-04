@@ -66,10 +66,13 @@ function drawbars(data, zoomdate) {
 	var racebystate= states.entries();
 	console.log("racebystate",racebystate)
 
-	color.domain(data.map(function(d){
-		// console.log("d",d.races);
-		return Object.keys(d.races);
-	}))
+	// color.domain(data.map(function(d){
+	// 	// console.log("d",d.races);
+	// 	return Object.keys(d.races);
+	// }))
+
+	color.domain(races);
+	console.log("color domain", color.domain());
 
 	racebystate.forEach(function(d){
 		var y0=0;
@@ -82,7 +85,6 @@ function drawbars(data, zoomdate) {
 
 			// console.log("name",names[0])
 
-			names= names[0];
 			// console.log("names", names)
 			// console.log(names, states.get(d.key)[names])
 
@@ -139,7 +141,37 @@ function drawbars(data, zoomdate) {
 	})
 	.attr("height", y.rangeBand())
 	.style("fill", function(d){
-		console.log("d",d)
-		return color(d.key)
+		// console.log("d",d.race);
+		return color(d.race)
 	})
+
+	var legend = svg.selectAll(".legend")
+	.data(color.domain().slice().reverse())
+	.enter().append("g")
+	.attr("class", "legend")
+	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+
+	legend.append("rect")
+	.attr("x", width - 18)
+	.attr("y", 280)
+	.attr("width", 18)
+	.attr("height", 18)
+	.style("fill", color);
+
+	legend.append("text")
+	.attr("x", width - 24)
+	.attr("y", 290)
+	.attr("dy", ".35em")
+	.style("text-anchor", "end")
+	.text(function(d) { return d; });
+
+
+
+
+
+
+
 }
+
+
