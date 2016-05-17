@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<style>
+  body {
+    font: 10px sans-serif;
+    margin: 0;
+  }
+  .axis path,
+  .axis line{
+    fill: none;
+    stroke: #a9a9a9;
+  }
+
+  .line {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+  }
+
+  .area {
+    fill: #e7e7e7 ;
+    stroke-width: 0.5px;
+    /*stroke: #666;*/
+  }
+
+  h2{
+    padding-left: 280px;
+  }
+  h1{
+    padding-left: 225px;
+  }
+
+</style>
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" type="text/javascript"></script>
+</head>
+<body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript">
+
+    var margin = {top: 10, right: 30, bottom: 20, left: 80},
+    width = 960 - margin.left - margin.right,
+    height = 69 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%m/%d/%Y").parse;
+
+    var x= d3.time.scale().range([0,width]);
+    var y= d3.scale.linear().range([height,0]);
+
+
+    var area =d3.svg.area()
+    .x(function(d){
+      // console.log("x", d.key);
+      return x(new Date(d.key));
+    })
+    .y0(height)
+    .y1(function(d){
+      // console.log("y",d.values)
+      return y(d.values);})
+
+    var line = d3.svg.line()
+    .x(function(d){
+      // console.log("x",d.key)
+      return x(new Date(d.key));})
+    .y(function(d){
+      // console.log("y",d.values);
+      return y(d.values)})
+
+    function minMax(d){
+      // console.log("d", d);
+      d.forEach(function(e){
+        var curMin=10000000;
+        var curMax=0;
+        var maxDate; 
+        var minDate;
+        // console.log("e",e.values);
+
+        e.values.forEach(function(c){
+          if(curMax< c.values){
+            curMax=c.values;
+            maxDate= c.key;
+          }
+          if(curMin> c.values){
+            curMin=c.values;
+            minDate= c.key;
+          }
+        })
+        e.curMax= curMax;
+        e.maxDate =maxDate;
+        e.curMin= curMin;
+        e.minDate= minDate;
+
+
+      })
+
+    }
+
+    d3.csv("sfpd-property-crimes-2005-2015.csv",function(error, data){
+      if(error) throw error;
+      // console.log("data loaded");
+      data.forEach(function(d){
+        d.Date =parseDate(d.Date);
+        d.Incidents= +parseInt(d.Incidents);
+      })
+
+      // console.log("data", data);
+
+      // Nest data by symbol.
+      var areas =d3.nest()
+      .key(function(d){return d.District})
+      .key(function(d){return d.Date})
+      .rollup(function(c){
+        var sum =d3.sum(c,function(e){
+          return e.Incidents;
+        })
+        return sum;
+      })
+      .entries(data);
+
+      // console.log("areas",areas);
+
+
+
+      function sort_by_Total(areas){
+        return areas.sort(function(a,b){
+          var aSum=0;
+          // console.log("a",a.values);
+          a.values.forEach(function(q){
+            aSum =q.values+aSum;
+          })
+          var bSum=0;
+          b.values.forEach(function(q){
+            bSum =q.values+bSum;
+          })
+          return bSum-aSum;
+        })
+      }
+
+      areas=sort_by_Total(areas);
+
+      areas.forEach(function(s){
+        s.MaxCrime= d3.max(areas[0].values,function(b){
+          // console.log("arry",b);
+          return b.values;
+        })
+      })
+      // console.log("sorted areas", areas);
+
+      x.domain(
+        [d3.min(areas[0].values, function(s){
+          // console.log("s[0]", s);
+          return new Date(s.key);
+        }),
+        d3.max(areas[0].values,function(s){
+          // console.log("s.key", s.key)
+          return new Date(s.key);
+        })
+        ])
+      // console.log("x.domain",x.domain())
+      console.log("areas",areas);
+
+      minMax(areas);
+      console.log("after", areas)
+
+
+
+      var svg = d3.select("body").selectAll("svg")
+      .data(areas)
+      .enter().append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var xMax=d3.max(areas[0].values, function(d){
+        return d.key;
+      })
+      xMax=new Date(xMax);
+      var xMin= d3.min(areas[0].values,function(d){
+        return d.key;
+      })
+      xMin=new Date(xMin);
+
+      // console.log([xMin,xMax]);
+
+      svg.append("path")
+      .attr("class", "area")
+      .attr("d", function(d) { 
+        y.domain([0, d.MaxCrime]); 
+        // x.domain([xMin ,xMax]);
+
+        // console.log("y.domain",y.domain());
+        // console.log("d.values",d.values);
+        // console.log("d", d.values);
+        return area(d.values); 
+      });
+
+
+
+      svg.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { 
+        y.domain([0, d.MaxCrime]); 
+        // x.domain([xMin ,xMax]);
+        // console.log("d", d.values)
+        // console.log("x",x.domain());
+        // console.log("y.domain", y.domain());
+        return line(d.values); 
+      });
+
+      svg.append("text")
+      .attr("x", -15)
+      .attr("y", height -55)
+      .style("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .text(function(d) { return d.key; });
+
+      var xAxis=d3.svg.axis().scale(x).orient("bottom");
+
+      svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .append("text")
+      .attr("x", width-20)
+      .attr("y",15)
+      .text("Year");
+      // .fill()
+
+      svg.append("text")
+      .attr("x", function(d){return x(new Date(d.maxDate))})
+      // .attr("y", function(d){
+      //   console.log("y", d.key)
+      //   console.log("y()", y(d.key))
+      //   return y(d.key)})
+      .attr("y", 15)
+      .text(function(d){return d.curMax})
+      .attr("fill", "red")
+
+      svg.append("text")
+      .attr("x", function(d){return x(new Date(d.minDate))})
+      // .attr("y", function(d){
+      //   console.log("y", d.key)
+      //   console.log("y()", y(d.key))
+      //   return y(d.key)})
+      .attr("y", 35)
+      .text(function(d){return d.curMin})
+      .attr("fill", "green")
+      // console.log("call back done.")
+    });
+    // console.log("script loaded");
+  </script>
+
+  <h1>Small Multiple Area Charts Showing Date by Incidents per District</h1>
+
+  <h2>Tenderloin district is one of the most safest district in San Francisco.</h2>
+</body>

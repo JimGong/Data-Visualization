@@ -1,0 +1,32 @@
+body {
+  font-family: sans-serif;
+  background-color: whitesmoke;
+}
+
+svg {
+  background-color: white;
+}
+
+.axis path,
+.axis line,
+.legend circle  {
+  stroke: dimgrey;
+  fill: none;
+}
+
+.axis text,
+.legend text {
+  fill: dimgrey;
+  font-size: 12px;
+}
+
+.bubbles circle {
+  stroke: white;
+  stroke-width: 1px;
+}
+
+.bubbles text {
+  font-size: 10px;
+}
+
+

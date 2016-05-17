@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="This is my website for CS 360 Final Project.">
+	<meta name="author" content="Jim Gong">
+
+	<title>Jim's Github Page</title>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="index/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="index/css/grayscale.css" rel="stylesheet">
+
+	<!-- Custom Fonts -->
+	<link href="index/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="main.js"></script>
+    <script src="util.js"></script>
+    <script src="bars.js"></script>
+    <script src= "HeatMap.js"></script>
+    <script src="colorbrewer.js"></script>
+
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-custom navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+					<i class="fa fa-bars"></i>
+				</button>
+               <!--  <a class="navbar-brand page-scroll" href="#page-top">
+                    <i class="fa fa-play-circle"></i>  <span class="light">Start</span> Bootstrap
+                </a> -->
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            	<ul class="nav navbar-nav">
+            		<!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+            		<li class="hidden">
+            			<a href="#page-top"></a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#about">About Me</a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#dataset">Orginial Dataset</a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#processing">Data Processing</a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#motivation">Motivation</a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#visualization">Visualization</a>
+            		</li>
+            		<li>
+            			<a class="page-scroll" href="#finding">Finding</a>
+            		</li>
+            	</ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+    	<div class="intro-body">
+    		<div class="container">
+    			<div class="row">
+    				<div class="col-md-8 col-md-offset-2">
+    					<h1 class="brand-heading">JiaMin Gong</h1>
+    					<p class="intro-text"><br>Major: Computer Science</p>
+    					<a href="#about" class="btn btn-circle page-scroll">
+    						<i class="fa fa-angle-double-down animated"></i>
+    					</a>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<!-- <img src ="https://cloud.githubusercontent.com/assets/14006264/12740758/2a2fbcae-c92b-11e5-9e65-9aa8ccede0d5.jpg"  width= "200" alt="" > -->
+    			<h2>About Me</h2>
+    			<p>- My name is JiaMin Gong. Jim is fine. I am a Junior at University of San Francisco. I am majoring in Computer Science.</p>
+    			<p>- I grew up in Shanghai, China. And I miss the food there so much.</p>
+    			<p>- I thought coding was amazing. Thats why I major in it. But when I actually start coding, I found it is so hard, but full of fun.</p>
+    			<h4>Contact Me</h4>
+    			<p>Feel free to email me to provide some feedback or suggestions on my project, give me some interview chances for my career, or to just say hello!</p>
+    			<p><a href="mailto:jgong7@dons.usfca.edu">jgong7@dons.usfca.edu</a></p>
+
+    			<a href="#dataset" class="btn btn-circle page-scroll">
+    				<i class="fa fa-angle-double-down animated"></i>
+    			</a>
+    		</div>
+    	</div>
+    </section>
+
+    <!-- Project Section -->
+    <section id="dataset" class="content-section text-center">
+    	<div class="project-section">
+    		<div class="container">
+    			<div class="col-lg-8 col-lg-offset-2">
+    				<h2>Original DataSet</h2>
+    				<p>File Name: Most+Recent+Cohorts+(All+Data+Elements).csv</p>
+    				<p>License: No license information was provided. If this work was prepared by an officer or employee of the United States government as part of that person's official duties it is considered a U.S. Government Work.</p>
+    				<p>Number of Columns: 1728. Number Of Rows: 7805.</p>
+    				<p>Description: This dataset contain integer and strings.</p>
+    				<p>For More info about this dataset: <a href="http://usf-cs360-2016.github.io/jgong7-cs360/project/FullDataDocumentation.pdf">FullDataDocumentation.pdf</a></p>
+    				<p>Link: <a href="http://catalog.data.gov/dataset/college-scorecard">http://catalog.data.gov/dataset/college-scorecard</a></p>
+    				<a href="#processing" class="btn btn-circle page-scroll">
+    					<i class="fa fa-angle-double-down animated"></i>
+    				</a>
+    			</div>
+    		</div>
+    	</div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="processing" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<h2>Data Processing</h2>
+    			<p>Filtering: I filtered the out all the columns excpet these, INSTNM,STABBR,TUITIONFEE_IN,TUITIONFEE_OUT,COSTT4_A,UGDS_WHITE, UGDS_BLACK, UGDS_ASIAN, UGDS_HISP, UGDS_AIAN, UGDS_NHPI, UGDS_NRA</p>
+    			<a href="#motivation" class="btn btn-circle page-scroll">
+    				<i class="fa fa-angle-double-down animated"></i>
+    			</a>
+    		</div>
+    	</div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="motivation" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<h2>Motivation</h2>
+    			<p>- The reason why I choose this dataset is that I found it very interesting to me. I want to know mroe the collages in United States.</p>
+    			<p>- What I want to learn from my visualization is the distribution of the race in each states, how much it cost to study in colleges for local student and out-state student. And also the college distrubiton in each states.</p>
+    			<a href="#visualization" class="btn btn-circle page-scroll">
+    				<i class="fa fa-angle-double-down animated"></i>
+    			</a>
+    		</div>
+    	</div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="visualization" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<h2>Visualization</h2>
+    			<p><a href="http://usf-cs360-2016.github.io/jgong7-cs360/project/visualize/">Check Out My Visualization</a></p>
+    			<a href="#finding" class="btn btn-circle page-scroll">
+    				<i class="fa fa-angle-double-down animated"></i>
+    			</a>
+
+    		</div>
+    	</div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section id="finding" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<h2>Finding</h2>
+    			<p>Califronia and Texas has the most number of colleges. There is a correlation between racial profiles and states. The most colleges state have, more even the racil profiles divtribute.</p>
+    			<p>There is no direct correlation between general cost of attendance and the number of colleges in a state.</p>
+    			<p>California have great burritos, we also have lots of colleges => burritios directly correlates to education. #westcoastbestcoast</p>
+    		</div>
+    	</div>
+    </section>
+
+    <!-- Map Section -->
+    <!-- <div id="map"></div> -->
+
+    <!-- Footer -->
+    <footer>
+    	<div class="container text-center">
+    		<p>Copyright &copy; Jim Gong 2016</p>
+    	</div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="index/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="index/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="index/js/jquery.easing.min.js"></script>
+
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script> -->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="index/js/grayscale.js"></script>
+
+</body>
+
+</html>
+

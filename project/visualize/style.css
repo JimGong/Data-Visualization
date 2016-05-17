@@ -1,0 +1,58 @@
+body {
+  background-color: lightgray;
+  text-align: center;
+
+  font-family: sans-serif;
+  font-size: 9pt;
+
+  color: #fff;
+
+}
+
+#tooltip {
+  font-weight: 600;
+  text-shadow: 0px 0px 2px white;
+
+  fill: black;
+  stroke: none;
+}
+
+#details {
+  text-align: left;
+}
+
+path.district {
+  fill: #dddddd;
+  stroke: white;
+  stroke-width: 3.5px;
+}
+
+.active {
+  stroke: red !important;
+  stroke-width: 1.5px !important;
+}
+
+circle.symbol {
+  fill-opacity: 0.6;
+
+  stroke: white;
+  stroke-width: 1px;
+}
+
+.xaxis path{
+  /*stroke: none;*/
+  /*font-size: 16px;*/
+  fill: none;
+}
+
+.axis path,
+.axis line,
+.legend circle  {
+  stroke: #bbbbbb;
+  fill: none;
+}
+
+.cell {
+  stroke: white;
+  stroke-width: 1px;
+}

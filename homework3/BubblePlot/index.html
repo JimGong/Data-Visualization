@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<link href="style.css" rel="stylesheet" type="text/css">
+
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="colorbrewer.js"></script>
+
+	<script src="bubble.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		// csv file to visualize
+		// downloaded from http://www.zillow.com/research/data/
+		var filename = "MarketHealthIndex_City_Filtered.csv";
+		
+		// global to store data
+		var data=[];
+		
+		var config = {
+			svg: {width: 960, height: 500},
+			pad: {top: 50, bottom: 30, left: 40, right: 10},
+			r: {min: 8, max: 40},
+			fill: {min: "#f7fcb9", max: "#31a354"}
+		};
+
+		config.width = config.svg.width - config.pad.left - config.pad.right;
+		config.height = config.svg.height - config.pad.top - config.pad.bottom;
+
+		config.legend = {width: 200, height: 20};
+
+		// columns we plan to encode
+		config.cols = {
+			x: "MarketHealthIndex",
+			y: "DaysOnMarket",
+			area: "SellForGain",
+			fill: "ForeclosureRatio"
+		};
+
+		var scales = {
+			x: d3.scale.linear().range([0, config.width]),
+			y: d3.scale.linear().range([config.height, 0]),
+			area: d3.scale.sqrt().range([config.r.min, config.r.max]),
+			fill: d3.scale.linear().range([config.fill.min, config.fill.max])
+		};
+
+		d3.csv(filename, accessor, callback);
+		/*
+ 		 * Converts cell values into appropriate data types.
+ 		 * Also calculates domains for certain headers.
+ 		 *
+ 		 * The headers are hard-coded to work with this specific csv.
+ 		 */
+ 		 function accessor(row) {
+ 		 	var out = {};
+
+ 		 	for (var col in row) {
+ 		 		switch(col) {
+ 		 			case "RegionName":
+ 		 			case "State":
+ 		 			out[col] = row[col];
+ 		 			break;
+
+ 		 			case "DaysOnMarket":
+ 		 			case "ZHVI":
+ 		 			out[col] = (row[col] !== "") ? parseInt(row[col]) : null;
+ 		 			break;
+
+ 		 			case "MarketHealthIndex":
+ 		 			case "SellForGain":
+ 		 			case "PrevForeclosed":
+ 		 			case "ForeclosureRatio":
+ 		 			case "MoM":
+ 		 			case "YoY":
+ 		 			case "ForecastYoYPctChange":
+ 		 			case "StockOfREOs":
+ 		 			case "NegativeEquity":
+ 		 			case "Delinquency":
+ 		 			out[col] = (row[col] !== "") ? parseFloat(row[col]) : null;
+ 		 			break;
+ 		 		}
+ 		 	}
+
+ 		 	return out;
+ 		 }
+ 		/*
+ 		* Called when the CSV is loaded. Outputs some debugging information,
+ 		* and then calls the draw() method.
+ 		*/
+ 		function callback(error, csv) {
+ 			if (error) {
+ 				console.warn(error);
+ 				return;
+ 			}
+ 			else if (csv.length < 1) {
+ 				console.warn("Warning: No rows found!");
+ 				return;
+ 			}
+
+ 			console.log("Loaded " + csv.length + " rows from " + filename + ".");
+
+ 			var headers = d3.map(csv[0]).keys();
+ 			console.log("Headers:", headers);
+ 			console.log("Last Row:", csv[csv.length - 1]);
+
+  			// lets filter out rows with null values for our important columns
+  			data = csv.filter(function(row) {
+   			// for all the columns we are encoding
+   			for (var key in config.cols) {
+      			// if the data for this (row, col) is null
+      			if (row[config.cols[key]] === null) {
+        			return false; // filter out this row
+        		}
+        	}
+    		return true; // else keep the row
+    	});
+
+  		// we should also sort our data by the area column
+  		data.sort(function(a, b) {
+  			return b[config.cols.area] - a[config.cols.area];
+  		});
+
+  		console.log("Filtered out " + (csv.length - data.length) + " rows.");
+
+  		// lets get the values we will encode to set our domains
+ 		// var values = {};
+  // values["x"] = data.map(function(row) { return row[config.cols.x]; });
+  // values["y"] = data.map(function(row) { return row[config.cols.y]; });
+  // values["area"] = data.map(function(row) { return row[config.cols.area]; });
+  // values["fill"] = data.map(function(row) { return row[config.cols.fill]; });
+  // console.log("Values:", values);
+
+  // calculate the extent of each
+  // var extent = {};
+  // extent["x"] = d3.extent(values["x"]);
+  // extent["y"] = d3.extent(values["y"]);
+  // extent["area"] = d3.extent(values["area"]);
+  // extent["fill"] = d3.extent(values["fill"]);
+  // console.table(extent);
+
+  // finally we can set the scales of each
+  // scales["x"].domain(extent["x"]);
+  // scales["y"].domain(extent["y"]);
+  // scales["area"].domain(extent["area"]);
+  // scales["fill"].domain(extent["fill"]);
+
+  // or, we can do everything above programatically instead!
+  for (var key in config.cols) {
+    // grab the associated column from our dataset
+    var col = config.cols[key];
+    scales[key].domain(           // set domain of key (x, y, area, fill)
+      d3.extent(                  // find the min/max
+        data.map(function(row) {  // grab col value from our dataset
+        	return row[col];
+        })
+        )
+      );
+}
+
+  // sanity check we are setting our scales properly
+  for (var key in scales) {
+  	console.log(key, config.cols[key], scales[key].domain());
+  }
+
+  // now we are ready to draw!
+  drawBubble();
+}
+
+// console.log("Page loaded.");
+
+</script>
+
+</body>

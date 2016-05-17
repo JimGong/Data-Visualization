@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>  
+	<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<script src="//d3js.org/d3.v3.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="util.js"></script>
+	
+	<h1>Map</h1>
+
+	<svg></svg>
+	<center><textarea id="myTextarea" rows="10" cols="40" display: none readonly>
+		N/A
+	</textarea></center>
+	<script type="text/javascript">
+		document.getElementById('myTextarea').style.display = "none";
+		var svg = d3.select("body").select("svg");
+
+		var active =d3.select(null);
+
+		var x = d3.scale.linear()
+		.domain([1,750])
+		.range([0, 300]);
+
+		// .tickValues(choropleth.domain());
+		var choropleth = d3.scale.threshold()
+		.domain([1, 15, 45, 90, 100, 350, 500, 750])
+		.range(["#fff7ec", "#fee8c8", "#fdd49e", "#fdbb84", "#fc8d59", "#ef6548", "#d7301f", "#b30000", "#7f0000"])
+
+		var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+		.tickSize(8)
+		.tickValues([1, 100, 350, 500, 750]);
+
+ 		// initialize our groups in the right order
+ 		var g = svg.append("g").attr("id", "plot");
+ 		var map = g.append("g").attr("id", "map");
+ 		// var tooltip = g.append("text").attr("id", "tooltip");
+ 		var legend= g.append("g").attr("id","legend")
+
+
+ 		var projection = d3.geo.conicEqualArea();
+ 		var path = d3.geo.path().projection(projection);
+
+ 		projection.center([-122.419416, 37.774929]);
+ 		projection.parallels([37.692514, 37.840699]);
+
+ 		projection.rotate([122, 0]);
+ 		projection.scale(350000);
+ 		var center = projection(projection.center());
+
+		// initialize tooltip
+		// tooltip.attr({
+		// 	"x": center[0]-450,
+		// 	"y": center[1]-200,
+		// 	"text-anchor": "start",
+		// 	"dx": -5,
+		// 	"dy": -5
+		// })
+		// .style({
+			// "visibility": "hidden"
+		// })
+		// .text("N/A");
+
+		legend
+		.append("g")
+		.attr("class","xaxis")
+		.attr("transform","translate(434272,334555)")
+		.call(xAxis)
+
+		legend.attr({
+			"x": center[0]-450,
+			"y": center[1]-200,
+			"text-anchor": "start",
+			"dx": -5,
+			"dy": -5
+		});
+
+		legend
+		.selectAll("rect")
+		.data(choropleth.range().map(function(d, i) {
+				// console.log(d,i)
+				return {
+					x0: i ? x(choropleth.domain()[i - 1]) : x.range()[0],
+					x1: i < choropleth.domain().length ? x(choropleth.domain()[i]) : x.range()[1],
+					z: d
+				};
+			}))
+		.enter().append("rect")
+		.attr("height", 8)
+		.attr("x", function(d) { 
+			return d.x0+434272;
+		})
+		.attr("y", function(d){return 334555})
+		.attr("width", function(d) { 
+				// console.log("d",d)
+				return Math.abs(d.x1 - d.x0); 
+			})
+		.style("fill", function(d) { return d.z; });
+
+		xAxis.tickValues(choropleth.domain());
+
+		legend
+		.append("text")
+		.attr("class", "caption")
+		.attr("x",434269)
+		.attr("y", 334550)
+		.text("Tree Maintenance Amount");
+
+		d3.json("neighborhoods.geojson", function(error, json){
+		// d3.json("districts.geojson", function(error, json){
+			if(error) throw error;
+
+			// console.log("districts", json)
+
+			d3.csv("Tree_Maintenance_2015.csv", accessor, callback);
+
+			map.selectAll("path")
+			.data(json.features, function(d) {
+				// console.log("d",d);
+				return d.properties.name;
+			})
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("class", "district")
+			.on("click",clicked);
+
+			util.resize(svg, g, 0);
+
+			
+		})
+
+		var dateformat = d3.time.format("%x %H:%M");
+
+		function accessor(row){
+			var out={};
+			// out.createdTime=dateformat.parse(row.Opened)
+			// out.closeTime=dateformat.parse(row.Closed)
+			out.status=row.Status
+			out.neighborhood=row.Neighborhood
+			out.geoLoc= row.Point;
+			out.responsibleAgency= row["Responsible Agency"]
+			return out
+		}
+
+		function callback(error, rows){
+			if(error) throw error;
+			// console.log("Tree_Maintenance ",rows);
+
+			var data=d3.nest()
+			.key(function(d){return d.neighborhood})
+			.key(function(d){return d.responsibleAgency})
+			.key(function(d){return d.status})
+			.rollup(function(leaves){return leaves.length;})
+			.map(rows,d3.map);
+			console.log("data", data);
+
+			map.selectAll("path")
+			.style("fill", function(d) {
+				// console.log("d", data.get(d.properties.name))
+				// console.log(data.get(d.properties.name)==null)
+
+				if(data.get(d.properties.name)!=null){
+					return choropleth(getSum(data.get(d.properties.name)))
+					// return choropleth(data.get(d.properties.name));
+				}
+			})
+			.on("mouseover", function(d) {
+				// document.getElementById("myTextarea").value = "Fifth Avenue, New York City";
+
+				var me = d3.select(this);
+				me.classed({"active": true});
+				
+				var text_part2;
+				if(data.get(d.properties.name)!=null){
+					// textbuilder(keys, values)
+					// text_part2=data.get(d.properties.name)
+
+					var result=data.get(d.properties.name)
+					var keys =result.keys();
+					var values =result.values();
+					// text_part2=""
+					text_part2=textbuilder(keys,values);
+				}else{
+					text_part2="  N/A";
+				}
+
+				// tooltip.text(util.toTitleCase(d.properties.name)+": "+text_part2);
+				var totalText="Area: "+util.toTitleCase(d.properties.name)+"\n"+text_part2
+
+				document.getElementById("myTextarea").value = totalText;
+				document.getElementById('myTextarea').style.display = "initial";
+				
+				// d3.select("text#tooltip")
+				// .call(wrap, 300)
+
+				// tooltip.style({"visibility": "visible"});
+				
+
+       		 // move selected path to front
+       		 this.parentNode.appendChild(this);
+       		})
+			.on("mouseout", function(d) {
+				var me = d3.select(this);
+				me.classed({"active": false});
+				// tooltip.style({"visibility": "hidden"});
+				document.getElementById('myTextarea').style.display = "none";
+			});
+		}
+		function wrap(text, width) {
+			text.each(function() {
+				var text = d3.select(this),
+				words = text.text().split(/\s+/).reverse(),
+				word,
+				line = [],
+				lineNumber = 0,
+        	lineHeight = 1.1, // ems
+        	y = text.attr("y"),
+        	dy = parseFloat(text.attr("dy")),
+        	tspan = text.text(null).append("tspan").attr("x", 434272.62472438044).attr("y", y).attr("dy", dy + "em");
+        	while (word = words.pop()) {
+        		line.push(word);
+        		tspan.text(line.join(" "));
+        		if (tspan.node().getComputedTextLength() > width) {
+        			line.pop();
+        			tspan.text(line.join(" "));
+        			line = [word];
+        			tspan = text.append("tspan").attr("x", 434272.62472438044).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+        		}
+        	}
+        });
+		}
+
+		function getSum(result){
+			var keys =result.keys();
+			var values =result.values();
+			var keyLength= keys.length
+			var i=0;
+			var j=0;
+			var valLength;
+			var sum=0;
+			for(i=0;i<keyLength;i++){
+				var vals =values[i]
+				var open= vals.get("Open");
+				var closed= vals.get("Closed");
+				if(open==null){
+					open= 0
+				}
+				if(closed==null){
+					closed=0
+				}
+				sum+=open
+				sum+=closed;
+			}
+			return sum;
+		}
+
+		function textbuilder(keys, values){
+			// console.log("in textbuilder")
+			var keyLength= keys.length
+
+			var i=0;
+			var j=0;
+			var valLength;
+			var text="";
+			text+="  Responsible Agency:\n";
+			for(i=0;i<keyLength;i++){
+				// console.log("Responsible Agency", keys[i]);
+				// text+="Responsible Agency: "
+				// text+="  Responsible Agency:\n";
+				text=text+ "    "+keys[i];
+				var vals =values[i]
+				// console.log("vals^^",vals)
+				var open= vals.get("Open");
+				var closed= vals.get("Closed");
+				if(open==null){
+					open= "N/A"
+				}
+				if(closed==null){
+					closed="N/A"
+				}
+				// console.log("get", open, closed);
+				text+="\n      Opened:"
+				text+=open;
+				text+="\n      Closed:"
+				text+=closed;
+				text+="\n"
+			}
+			return text
+		}
+
+
+		function clicked(d){
+
+			var width=761.21875
+			var height= 757.46875
+
+			// console.log("clicked",d)
+			if (active.node() === this) return reset();
+			active.classed("active", false);
+			active = d3.select(this).classed("active", true);
+
+			var bounds = path.bounds(d),
+			dx = bounds[1][0] - bounds[0][0],
+			dy = bounds[1][1] - bounds[0][1],
+			x = (bounds[0][0] + bounds[1][0]) / 2,
+			y = (bounds[0][1] + bounds[1][1]) / 2,
+			scale = .9 / Math.max(dx / width, dy / height)
+			translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+			// console.log("bounds",bounds);
+			// console.log("dx, dy", dx,dy);
+			// console.log("x, y",x,y)
+			// console.log("scale",scale)
+
+			g.transition()
+			.duration(750)
+			.style("stroke-width", 1.5 / scale + "px")
+			.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+
+		}
+
+
+		function reset() {
+			active.classed("active", false);
+			active = d3.select(null);
+
+			// g.transition()
+			// .duration(750)
+			// .style("stroke-width", "1.5px")
+			// .attr("transform", "");
+			util.resize(svg, g, 0);
+
+			// console.log("reseted")
+		}
+
+	</script>
+	<h1>Finding: </h1>
+	<h2>It is very interesting that the Mission area has the highest amount of tree maintenance. But it has way less tree than the Golden Gate Park area. And the most areas surrding Mission have a high amount of tree maintenance too. Also Golden Gate park and Park Presideo have a relative low amount of tree maintance, but they have more tree than any other areas. Inner and Outer Richmond also don't have many trees but the mainenance amount is high. So I think the amount of tree maintenance amount has some positive connection with the amount of active population in that area.</h2>
+</body>
