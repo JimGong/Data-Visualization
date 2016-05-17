@@ -209,7 +209,7 @@ function drawbars (data, zoomdate) {
 		// console.log("d",d.race);
 		return color(d.race)
 	})
-	console.log(bars)
+	// console.log(bars)
 
 	svg.append("g")
 	.attr("class", "y axis")
@@ -251,7 +251,7 @@ function drawbars (data, zoomdate) {
 	}
 
 	function barsOnClick(d){
-		console.log("bar onClick", d);
+		// console.log("bar onClick", d);
 		if(svg.selectAll("rect#"+d.race).attr("class")!="bar selected"){
 			svg.selectAll("rect#aian").transition().duration(550).style("fill", function(d){return shadeColor2("aian", 0.8)});
 			svg.selectAll("rect#asian").transition().duration(550).style("fill", function(d){return shadeColor2("asian", 0.8)});
@@ -306,7 +306,7 @@ function drawbars (data, zoomdate) {
 
 	d3.selectAll("svg#bars").selectAll(".legend").on("click", legendOnClick);
 	function legendOnClick(d){
-		console.log("d",d)
+		// console.log("d",d)
 		if(svg.selectAll("rect#"+d).attr("class")!="bar selected"){
 			svg.selectAll("rect#aian").transition().duration(550).style("fill", function(d){return shadeColor2("aian", 0.8)});
 			svg.selectAll("rect#asian").transition().duration(550).style("fill", function(d){return shadeColor2("asian", 0.8)});
@@ -351,9 +351,9 @@ function drawbars (data, zoomdate) {
 	d3.selectAll(".y .tick text").on("click", onClick);
 
 	onClick= function(d){
-		console.log("clicked",d);
+		// console.log("clicked",d);
 		var me=d3.select(this);
-		console.log("me",me);
+		// console.log("me",me);
 
 		if(me.attr("class")===null||me.attr("class")===""){
 			var all=d3.selectAll(".y .tick text");
@@ -394,7 +394,7 @@ function drawbars (data, zoomdate) {
 				ydomain.push(q.school)
 			})
 
-			console.log("zoom into state: ",d)
+			// console.log("zoom into state: ",d)
 
 			// barhelper(bars,ydomain,racebyschool,true)
 			zoomdate(ydomain,racebyschool,true)
@@ -420,7 +420,7 @@ function drawbars (data, zoomdate) {
 			bars.on("click", barsOnClick);
 
 		}else{
-			console.log("zoomback to state");
+			// console.log("zoomback to state");
 			// d3.selectAll("text#yAxisText").text("State")
 
 
@@ -452,7 +452,7 @@ function drawbars (data, zoomdate) {
 	}
 
 	var zoomdate = function(newdomain, newdata, isSchool) {
-		console.log("---------------------------------------------------")
+		// console.log("---------------------------------------------------")
 		d3.selectAll("svg#bars").selectAll(".state").transition().remove()
 
 		y.domain(newdomain);
@@ -510,6 +510,8 @@ function drawbars (data, zoomdate) {
 		.style("fill-opacity", 1);
 
 		bars.on("click", barsOnClick);
+		bars.on("mouseover", barMouseOver);
+		bars.on("mouseout", barMouseOut)
 
 
 		var t = svg.transition().duration(750);
@@ -547,7 +549,7 @@ var barhelper=function (targetState, zoomdate){
 	})
 	
 	if(racebyschool.length>=62){
-		console.log(racebyschool)
+		// console.log(racebyschool)
 		racebyschool= racebyschool.filter(function(a){
 
 			// console.log(a, racebyschool.indexOf(a));
@@ -562,7 +564,7 @@ var barhelper=function (targetState, zoomdate){
 		ydomain.push(q.school)
 	})
 
-	console.log("bars zoom into state: ",targetState)
+	// console.log("bars zoom into state: ",targetState)
 	// console.log("new data: ", racebyschool)
 
 	zoomdate(ydomain,racebyschool,true)
@@ -596,7 +598,7 @@ var barhelper=function (targetState, zoomdate){
 		})
 	}
 	var bars= d3.selectAll("svg#bars").selectAll(".bar");
-	console.log("bars",bars);
+	// console.log("bars",bars);
 	var tooltip=d3.selectAll("svg#bars").selectAll("text#tooltip")
 	tooltip.attr("x",775);
 	bars.on("mouseover", barMouseOver);

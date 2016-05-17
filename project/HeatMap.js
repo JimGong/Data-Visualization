@@ -240,7 +240,13 @@ function drawHeatMap(data){
 	  	var coords= d3.mouse(svg.node());
 	  	tooltip.attr({"x": coords[0], "y": coords[1]});
 	  })
+	  .on("mouseout", function(d){
+	  	tooltip.style({
+	  		"visibility": "hidden"
+	  	})
+	  })
 	}
+
 
 	// console.log("colorScale domain", colorScale.domain())
 
@@ -267,7 +273,7 @@ function drawHeatMap(data){
 	d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#y-axis").selectAll(".tick text").on("click", HeatMapOnClick);
 	
 	function HeatMapOnClick(targetState){
-		console.log("clicked",targetState)
+		// console.log("clicked",targetState)
 
 		var me=d3.select(this);
 		// console.log("--------", me.attr("class"));
@@ -275,12 +281,12 @@ function drawHeatMap(data){
 		// console.log("me", me)
 		if(me.attr("class")===null||me.attr("class")===""){
 
-			console.log("************* HeatMap zoom into schools")
+			// console.log("************* HeatMap zoom into schools")
 			var newdataset= data.filter(function(d){
 				// console.log(d.state, d.state===targetState);
 				return d.state===targetState;
 			})
-			console.log("newdataset", newdataset);
+			// console.log("newdataset", newdataset);
 
 			if(newdataset.length>=62){
 
@@ -303,7 +309,7 @@ function drawHeatMap(data){
 			})
 			.map(newdataset,d3.map)
 
-			console.log("e",e)
+			// console.log("e",e)
 
 			var newydomain=[];
 
@@ -328,12 +334,12 @@ function drawHeatMap(data){
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#y-axis").selectAll(".tick text").on("click", HeatMapOnClick);
 
 		}else{
-			console.log("HeatMap zoom back to states");
+			// console.log("HeatMap zoom back to states");
 
 			d3.selectAll("g#heatmap").remove();
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#y-axis").remove();
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#x-axis").remove();
-			console.log("olddataset", dataset);
+			// console.log("olddataset", dataset);
 
 			yScale.domain(statesDomain);
 
@@ -350,7 +356,7 @@ function drawHeatMap(data){
 			var newdataset= data.filter(function(d){
 				return d.state===targetState;
 			})
-			console.log("newdataset", newdataset);
+			// console.log("newdataset", newdataset);
 
 			if(newdataset.length>=62){
 
@@ -373,7 +379,7 @@ function drawHeatMap(data){
 			})
 			.map(newdataset,d3.map)
 
-			console.log("e",e)
+			// console.log("e",e)
 
 			var newydomain=[];
 
@@ -396,12 +402,12 @@ function drawHeatMap(data){
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#y-axis").selectAll(".tick text").on("click", HeatMapOnClick);
 
 		}else{
-			console.log("HeatMap zoom back to states");
+			// console.log("HeatMap zoom back to states");
 
 			d3.selectAll("g#heatmap").remove();
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#y-axis").remove();
 			d3.select("body").selectAll("svg#heatmap").select("g#plot").select("g#x-axis").remove();
-			console.log("olddataset", dataset);
+			// console.log("olddataset", dataset);
 
 			yScale.domain(statesDomain);
 

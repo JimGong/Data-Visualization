@@ -1,5 +1,5 @@
 body {
-  background-color: lightgray;
+  background-color: black;
   text-align: center;
 
   font-family: sans-serif;
@@ -10,10 +10,9 @@ body {
 }
 
 #tooltip {
-  font-weight: 600;
-  text-shadow: 0px 0px 2px white;
-
-  fill: black;
+  font-weight: 300;
+  /*text-shadow: 0px 0px 0px white;*/
+  fill: red;
   stroke: none;
 }
 
@@ -24,7 +23,7 @@ body {
 path.district {
   fill: #dddddd;
   stroke: white;
-  stroke-width: 3.5px;
+  stroke-width: 1.1px;
 }
 
 .active {
@@ -32,27 +31,40 @@ path.district {
   stroke-width: 1.5px !important;
 }
 
-circle.symbol {
+/*circle.symbol {
   fill-opacity: 0.6;
 
   stroke: white;
   stroke-width: 1px;
-}
+  }*/
 
 .xaxis path{
-  /*stroke: none;*/
+  stroke: none;
   /*font-size: 16px;*/
   fill: none;
 }
 
 .axis path,
 .axis line,
-.legend circle  {
+.legend  {
   stroke: #bbbbbb;
   fill: none;
 }
 
-.cell {
-  stroke: white;
-  stroke-width: 1px;
-}
+  .cell {
+    stroke: white;
+    stroke-width: 1px;
+  }
+  svg#bars .axis{
+    fill: white;
+  }
+
+  svg#heatmap .axis{
+    fill: lightgray;
+  }
+  #legend .xaxis{
+    fill: white;
+  }
+  .legend {
+    fill: blue;
+  }
