@@ -15,35 +15,25 @@ function drawbars (data, zoomdate) {
 	var statesList= ["ME", "MA", "MI", "NV", "NJ", "NY", "NC", "OH", "PA", "RI", "TN", "TX", "UT", "WA", "WI", "PR", "MD", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "MN", "MS", "MO", "NE", "NH", "NM", "ND", "OK", "OR", "SC", "SD", "VT", "VA", "WV", "WY"]
 	var races= ["white", "black", "asian","hisp","aian","nhpi","nra","other"];
 	var whitetotal=0, blacktotal=0, asiantotal=0, hisptotal=0, aiantotal=0, nhpitotal=0, nratotal=0, othertotal=0
-	var sortby = {}
-
-	console.log("-------------BAR CHART----------------------")
-	// console.log("data", data)
-	
-
+	var sortby = {}	
 
 	data=data.filter(function(d){
-		// console.log("d",d.cost, isNaN(d.cost))
 		return !isNaN(d.races.white);
 	})
 	data=data.filter(function(d){
-		// console.log("d",d)
 		return !isNaN(d.races.black);
 	})
 	data=data.filter(function(d){
-		// console.log("d",d)
 		return !isNaN(d.races.asian);
 	})
 
 	data.forEach(function(d){
 		d=d.races;
-		// console.log("d",d)
 		d.other= 1- d.asian-d.aian-d.black-d.hisp-d.nhpi-d.nra-d.white;
 	})
 
 	data.forEach(function(d){
 		d=d.races;
-		// console.log("d",d);
 		whitetotal+= d.white
 		blacktotal+= d.black
 		asiantotal+= d.asian
@@ -62,19 +52,14 @@ function drawbars (data, zoomdate) {
 	sortby.nhpi = nhpitotal;
 	sortby.other= othertotal;
 
-	// console.log("sortby", sortby);
-
 	races.sort(function(a,b){
 		return -sortby[a]+sortby[b];
 	});
 
 	globaldata=data;
 
-	// console.log("data",data);
-
 	var margin = {top: 30, right: 50, bottom: 30, left:100},
 	width = 900 - margin.left - margin.right,
-	// width = 900 - margin.left - margin.right,
 	height = 800 - margin.top - margin.bottom;
 
 	var x = d3.scale.linear().rangeRound([0,width]);
@@ -96,19 +81,11 @@ function drawbars (data, zoomdate) {
 	svg = d3.select("body").selectAll("svg#bars");
 	svg.transition().duration(750);
 
-
-	// console.log("svg", svg)
-
-	// svg.append("g")
-	// .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 	var states = d3.nest()
 	.key(function(d){
 		return d.state;
 	})
 	.rollup(function(c){
-		// console.log("c",c)
-
 		var out ={}
 		out.white= d3.mean(c,function(e){return e.races.white})
 		out.black= d3.mean(c,function(e){return e.races.black})
@@ -118,85 +95,55 @@ function drawbars (data, zoomdate) {
 		out.nhpi=d3.mean(c,function(e){return e.races.nhpi})
 		out.nra=d3.mean(c,function(e){return e.races.nra})
 		out.other=d3.mean(c,function(e){return e.races.other})
-
 		return out;
 	})
 	.map(data,d3.map);
 
-
-	// console.log("states", states,states.size());
-
 	var racebystate= states.entries();
-	// console.log("racebystate",racebystate)
 
 	color.domain(races);
 	globalcolor=color;
-	// console.log("color domain", color.domain());
 
 	racebystate.forEach(function(d){
 		var y0=0;
-		// console.log("d",d);
 		d.whatever= color.domain().map(function(names){
 			return {race: names, y0:y0, y1:y0+= states.get(d.key)[names]}
 		})
 	})
 
-	// console.log("racebystate", racebystate)
 	racebystate_global=racebystate;
 
-	// console.log("&&&&&&&&",states.get("CA").black)
-	ydomain_states=states.keys();
+	ydomain_states=states.keys().reverse();
 
 	y.domain(ydomain_states);
 	x.domain([0,1]);
 
 	svg.append("g")
 	.attr("class", "x axis")
-	.attr("transform", "translate(20," + height + ")") // height can be 727
+	.attr("transform", "translate(20," + height + ")")
 	.call(xAxis)
 	.append("text")
 	.attr("x", width/2-45)
 	.attr("y", 32)
 	.text("Race By Percentage");
 
-	// svg.append("g")
-	// .attr("class", "y axis")
-	// .attr("transform", "translate(10," + 0 + ")")
-	// .call(yAxis)
-	// .append("text")
-	// .attr("id", "yAxisText")
-	// .attr("x", -30)
-	// .attr("y", 9)
-	// .text("State");
-
-
-	// d3.selectAll(".y .tick text").on("click", onClick);
-
-	// console.log("racebystate", racebystate);
 	var state= svg.selectAll(".district")
 	.data(racebystate)
 	.enter().append("g")
 	.attr("class", "state")
 	.attr("id",function(d){
-		// console.log(d)
 		return d.key;
 	})
 	.attr("transform", function(d) { return "translate(15, " + y(d.key) + ")"; });
 
 	var enter= state.selectAll("rect")
 	.data(function(d){
-		// console.log("d",d);
-		// myname= d.key
 		return d.whatever;
 	})
 	.enter();
-	// console.log("enter", enter)
 
 	var bars= enter.append("rect")
 	.attr("class", "bar")
-	// .attr("id",function(d){
-	// 	return myname;
-	// })
 	.attr("width", function(d){
 		return (x(d.y1)- x(d.y0))
 	})
@@ -206,28 +153,22 @@ function drawbars (data, zoomdate) {
 	.attr("height", y.rangeBand())
 	.attr("id", function(d){return d.race})
 	.style("fill", function(d){
-		// console.log("d",d.race);
 		return color(d.race)
 	})
-	// console.log(bars)
 
 	svg.append("g")
 	.attr("class", "y axis")
 	.attr("transform", "translate(15," + 0 + ")")
-	// .innerTickSize(0)
 	.call(yAxis)
 	.append("text")
 	.attr("id", "yAxisText")
 	.attr("x", 10)
 	.attr("y", 9)
 	.text("State");
-	// svg.selectAll(".y .tick text").attr("transform","translate("+50+","+0+")")
 
 	d3.selectAll(".y .tick text").on("click", onClick);
 
-
 	function barMouseOver(d){
-		// console.log("bar mouseover",d)
 		var part1 = d.race;
 		var part2= d.y1-d.y0;
 		part2=part2*100
@@ -251,7 +192,6 @@ function drawbars (data, zoomdate) {
 	}
 
 	function barsOnClick(d){
-		// console.log("bar onClick", d);
 		if(svg.selectAll("rect#"+d.race).attr("class")!="bar selected"){
 			svg.selectAll("rect#aian").transition().duration(550).style("fill", function(d){return shadeColor2("aian", 0.8)});
 			svg.selectAll("rect#asian").transition().duration(550).style("fill", function(d){return shadeColor2("asian", 0.8)});
@@ -272,7 +212,6 @@ function drawbars (data, zoomdate) {
 			svg.selectAll("rect#nra").transition().duration(550).style("fill", function(d){return shadeColor2("nra", 0)});
 			svg.selectAll("rect#other").transition().duration(550).style("fill", function(d){return shadeColor2("other", 0)});
 			svg.selectAll("rect#white").transition().duration(550).style("fill", function(d){return shadeColor2("white", 0)});
-			// svg.selectAll("rect#"+d.race).style("fill",function(e){return shadeColor2(e.race, -0.12)})
 			svg.selectAll("rect#"+d.race).classed({"selected":false});
 		}
 	}
@@ -286,7 +225,6 @@ function drawbars (data, zoomdate) {
 	.enter().append("g")
 	.attr("class", "legend")
 	.attr("transform", function(d, i) { 
-		// console.log(i)
 		return "translate("+ 0 +","+ i*25 + ")"; });
 
 
@@ -298,7 +236,7 @@ function drawbars (data, zoomdate) {
 	.style("fill", color);
 
 	legend.append("text")
-	.attr("x", 775)
+	.attr("x", 790)
 	.attr("y", 30)
 	.attr("dy", ".35em")
 	.style("text-anchor", "start")
@@ -306,7 +244,6 @@ function drawbars (data, zoomdate) {
 
 	d3.selectAll("svg#bars").selectAll(".legend").on("click", legendOnClick);
 	function legendOnClick(d){
-		// console.log("d",d)
 		if(svg.selectAll("rect#"+d).attr("class")!="bar selected"){
 			svg.selectAll("rect#aian").transition().duration(550).style("fill", function(d){return shadeColor2("aian", 0.8)});
 			svg.selectAll("rect#asian").transition().duration(550).style("fill", function(d){return shadeColor2("asian", 0.8)});
@@ -327,7 +264,6 @@ function drawbars (data, zoomdate) {
 			svg.selectAll("rect#nra").transition().duration(550).style("fill", function(d){return shadeColor2("nra", 0)});
 			svg.selectAll("rect#other").transition().duration(550).style("fill", function(d){return shadeColor2("other", 0)});
 			svg.selectAll("rect#white").transition().duration(550).style("fill", function(d){return shadeColor2("white", 0)});
-			// svg.selectAll("rect#"+d.race).style("fill",function(e){return shadeColor2(e.race, -0.12)})
 			svg.selectAll("rect#"+d).classed({"selected":false});
 		}
 	}
@@ -351,52 +287,35 @@ function drawbars (data, zoomdate) {
 	d3.selectAll(".y .tick text").on("click", onClick);
 
 	onClick= function(d){
-		// console.log("clicked",d);
 		var me=d3.select(this);
-		// console.log("me",me);
 
 		if(me.attr("class")===null||me.attr("class")===""){
 			var all=d3.selectAll(".y .tick text");
-			// console.log("d",d)
+
 			var newdata= data;
-			// console.log("newdata",newdata);
 			newdata=newdata.filter(function(e){
-				// console.log(e.state, d, e.state===d);
 				return e.state===d;
 			})
 
-			// console.log("newdata",newdata);
-
 			var racebyschool=newdata;
-			// console.log("racebyschool", racebyschool);
 			racebyschool.forEach(function(e){
 				var y0=0;
-				// console.log("e",e)
 				e.whatever= color.domain().map(function(names){
-					// console.log("names",names)
 					return {race: names, y0:y0, y1:y0+= e.races[names]}
-
 				})
 			})
-			// console.log("#school: " + racebyschool.length);
-			if(racebyschool.length>=62){
-				// console.log(racebyschool)
-				racebyschool= racebyschool.filter(function(a){
 
-					// console.log(a, racebyschool.indexOf(a));
+			if(racebyschool.length>=62){
+				racebyschool= racebyschool.filter(function(a){
 					return racebyschool.indexOf(a)<=62
 				})
 			}
 			
 			var ydomain=[]
 			racebyschool.forEach(function(q){
-				// console.log("q",q)
 				ydomain.push(q.school)
 			})
 
-			// console.log("zoom into state: ",d)
-
-			// barhelper(bars,ydomain,racebyschool,true)
 			zoomdate(ydomain,racebyschool,true)
 
 			svg.selectAll(".y").remove();
@@ -410,7 +329,6 @@ function drawbars (data, zoomdate) {
 			.attr("y", 9)
 			.text("College");
 
-
 			d3.selectAll(".y .tick text").classed({"selected": true})
 
 			d3.selectAll(".y .tick text").on("click", onClick);
@@ -420,11 +338,6 @@ function drawbars (data, zoomdate) {
 			bars.on("click", barsOnClick);
 
 		}else{
-			// console.log("zoomback to state");
-			// d3.selectAll("text#yAxisText").text("State")
-
-
-			// barhelper(bars,states.keys(), racebystate,false)
 			zoomdate(states.keys(), racebystate,false)
 
 			svg.selectAll(".y").remove();
@@ -452,15 +365,10 @@ function drawbars (data, zoomdate) {
 	}
 
 	var zoomdate = function(newdomain, newdata, isSchool) {
-		// console.log("---------------------------------------------------")
 		d3.selectAll("svg#bars").selectAll(".state").transition().remove()
 
-		y.domain(newdomain);
-		// svg.style("height",800)
+		y.domain(newdomain.reverse());
 
-		// console.log("zoomdate")
-		// console.log("y domain", y.domain());
-		// console.log("new data", newdata)
 		state= svg.selectAll(".district")
 		.data(newdata)
 		.enter().append("g")
@@ -472,19 +380,13 @@ function drawbars (data, zoomdate) {
 			d3.selectAll("text#yAxisText").text("College")
 
 			state.attr("transform", function(d) {
-			// console.log("d",d)
-			return "translate(20, " + y(d.school) + ")"; });
+				return "translate(20, " + y(d.school) + ")"; });
 		}else{
 			d3.selectAll("text#yAxisText").text("State")
 
 			state.attr("transform", function(d) {
-			// console.log("d",d)
-			return "translate(20, " + y(d.key) + ")"; });
+				return "translate(20, " + y(d.key) + ")"; });
 		}
-
-		// d3.selectAll("svg#bars").selectAll(".state").remove()
-		// bars.remove();
-
 
 		bars= state.selectAll("rect")
 		.data(function(d){
@@ -493,7 +395,6 @@ function drawbars (data, zoomdate) {
 
 		.attr("class", "bar")
 		.attr("width", function(d){
-			// console.log(d.y1, d.y0, d.y1>=d.y0)
 			return (x(d.y1)- x(d.y0))
 		})
 		.attr("x", function(d) { 
@@ -535,37 +436,24 @@ var barhelper=function (targetState, zoomdate){
 		return e.state===targetState;
 	})
 
-	// console.log("newdata",newdata);
-
 	var racebyschool=newdata;
 	racebyschool.forEach(function(e){
 		var y0=0;
-		// console.log("e",e)
 		e.whatever= color.domain().map(function(names){
-			// console.log("names",names)
 			return {race: names, y0:y0, y1:y0+= e.races[names]}
-
 		})
 	})
 	
 	if(racebyschool.length>=62){
-		// console.log(racebyschool)
 		racebyschool= racebyschool.filter(function(a){
-
-			// console.log(a, racebyschool.indexOf(a));
 			return racebyschool.indexOf(a)<=62
 		})
 	}
-	// console.log("#school: " + racebyschool.length);
 
 	var ydomain=[]
 	racebyschool.forEach(function(q){
-		// console.log("q",q)
 		ydomain.push(q.school)
 	})
-
-	// console.log("bars zoom into state: ",targetState)
-	// console.log("new data: ", racebyschool)
 
 	zoomdate(ydomain,racebyschool,true)
 
@@ -581,7 +469,6 @@ var barhelper=function (targetState, zoomdate){
 	.text("State");
 
 	function barMouseOver(d){
-		// console.log("------bar mouseover",d)
 		var part1 = d.race;
 		var part2= d.y1-d.y0;
 		part2=part2*100
@@ -598,7 +485,6 @@ var barhelper=function (targetState, zoomdate){
 		})
 	}
 	var bars= d3.selectAll("svg#bars").selectAll(".bar");
-	// console.log("bars",bars);
 	var tooltip=d3.selectAll("svg#bars").selectAll("text#tooltip")
 	tooltip.attr("x",775);
 	bars.on("mouseover", barMouseOver);
@@ -623,7 +509,6 @@ var barhelperRest=function (zoomdate){
 	.text("State");
 
 	d3.selectAll(".y .tick text").on("click", onClick);
-
 }
 
 
