@@ -367,7 +367,7 @@ function drawbars (data, zoomdate) {
 	var zoomdate = function(newdomain, newdata, isSchool) {
 		d3.selectAll("svg#bars").selectAll(".state").transition().remove()
 
-		y.domain(newdomain.reverse());
+		y.domain(newdomain.sort().reverse());
 
 		state= svg.selectAll(".district")
 		.data(newdata)
