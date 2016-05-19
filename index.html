@@ -134,7 +134,7 @@
     				<p>File Name: Most+Recent+Cohorts+(All+Data+Elements).csv</p>
     				<p>License: No license information was provided. If this work was prepared by an officer or employee of the United States government as part of that person's official duties it is considered a U.S. Government Work.</p>
     				<p>Number of Columns: 1728. Number Of Rows: 7805.</p>
-    				<p>Description: This dataset contain integer and strings.</p>
+    				<p>Description: This dataset lists all of the colleges and universities throughout the United States as well as giving us countless statistics for each college/university such as racial profile, average SAT scores, tution cost, and etc. </p>
     				<p>For More info about this dataset: <a href="http://usf-cs360-2016.github.io/jgong7-cs360/project/FullDataDocumentation.pdf">FullDataDocumentation.pdf</a></p>
     				<p>Link: <a href="http://catalog.data.gov/dataset/college-scorecard">http://catalog.data.gov/dataset/college-scorecard</a></p>
     				<a href="#processing" class="btn btn-circle page-scroll">
@@ -163,7 +163,7 @@
     	<div class="row">
     		<div class="col-lg-8 col-lg-offset-2">
     			<h2>Motivation</h2>
-    			<p>- The reason why I choose this dataset is that I found it very interesting to me. I want to know mroe the collages in United States.</p>
+    			<p>- The reason why I choose this dataset is that I found it very interesting to me. I want to know mroe the colleges in United States.</p>
     			<p>- What I want to learn from my visualization is the distribution of the race in each states, how much it cost to study in colleges for local student and out-state student. And also the college distrubiton in each states.</p>
     			<a href="#visualization" class="btn btn-circle page-scroll">
     				<i class="fa fa-angle-double-down animated"></i>
@@ -177,27 +177,8 @@
     	<div class="row">
     		<div class="col-lg-8 col-lg-offset-2">
     			<h2>Visualization</h2>
-    			
-
-              <!--   <svg id="map"></svg> <br/>
-                <h2>States Has Most College</h2>
-
-                <div>
-                    <div  style="float:left">
-                        <svg width="900" height="800" id="bars"></svg>
-                    </div>
-                    <div style="float:left">
-                        <svg id="heatmap"></svg>
-                    </div>
-                </div> -->
-
-
-               <!--  <a href="#finding" class="btn btn-circle page-scroll">
-                    <i class="fa fa-angle-double-down animated"></i>
-                </a> -->
-
-            </div>
-        </div>
+    		</div>
+    	</div>
     </section>
 
 
@@ -205,65 +186,65 @@
     <h3>Number of Colleges in Each State</h3>
 
     <div id="twosvgs">
-       <div id="svgbars" width= 50% style="float:left">
-          <svg width="900" height="800" id="bars"></svg>
-          <h3>Racial Profile</h3>
-      </div>
-      <div width=50% style="float:left">
-          <svg id="heatmap"></svg>
-          <h3>Cost</h3>
-      </div>
-  </div>
+    	<div id="svgbars" width= 50% style="float:left">
+    		<svg width="900" height="800" id="bars"></svg>
+    		<h3>Racial Profile</h3>
+    	</div>
+    	<div width=50% style="float:left">
+    		<svg id="heatmap"></svg>
+    		<h3>Cost</h3>
+    	</div>
+    </div>
 
-  <section id="visualization" class="container content-section text-center">
-   <div id= "specialbutton">
-      <a href="#finding" class="btn btn-circle page-scroll">
-         <i class="fa fa-angle-double-down animated"></i>
-     </a>
- </div>
-</section>
+    <section id="visualization" class="container content-section text-center">
+    	<div id= "specialbutton">
+    		<a href="#finding" class="btn btn-circle page-scroll">
+    			<i class="fa fa-angle-double-down animated"></i>
+    		</a>
+    	</div>
+    </section>
 
 
-<!-- Contact Section -->
-<section id="finding" class="container content-section text-center">
-   <div class="row">
-      <div class="col-lg-8 col-lg-offset-2">
-         <h2>Finding</h2>
-         <p>Califronia and Texas has the most number of colleges. There is a correlation between racial profiles and states. More colleges a state have, more even the racil profiles would divtribute for that state.</p>
-         <p>There is no direct correlation between general cost of attendance and the number of colleges in a state.</p>
-         <p>California have great burritos, we also have lots of colleges => burritios directly correlates to education. #westcoastbestcoast</p>
-     </div>
- </div>
-</section>
+    <!-- Contact Section -->
+    <section id="finding" class="container content-section text-center">
+    	<div class="row">
+    		<div class="col-lg-8 col-lg-offset-2">
+    			<h2>Finding</h2>
+    			<p>Califronia and Texas has the most number of colleges. There is a correlation between racial profiles and states. The more colleges a state has, the more diverse the racial profile.</p>
+    			<p>There is no direct correlation between general cost of attendance and the number of colleges in a state.</p>
+    			<p>California have great burritos, we also have lots of colleges => burritios directly correlates to education. #westcoastbestcoast</p>
+    		</div>
+    	</div>
+    </section>
 
-<!-- Map Section -->
-<!-- <div id="map"></div> -->
+    <!-- Map Section -->
+    <!-- <div id="map"></div> -->
 
-<!-- Footer -->
-<footer>
-   <div class="container text-center">
-      <p>Copyright &copy; Jim Gong 2016</p>
-  </div>
-</footer>
+    <!-- Footer -->
+    <footer>
+    	<div class="container text-center">
+    		<p>Copyright &copy; Jim Gong 2016</p>
+    	</div>
+    </footer>
 
-<!-- jQuery -->
-<script src="index/js/jquery.js"></script>
+    <!-- jQuery -->
+    <script src="index/js/jquery.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="index/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="index/js/bootstrap.min.js"></script>
 
-<!-- Plugin JavaScript -->
-<script src="index/js/jquery.easing.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="index/js/jquery.easing.min.js"></script>
 
-<!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
-<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script> -->
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script> -->
 
-<!-- Custom Theme JavaScript -->
-<script src="index/js/grayscale.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="index/js/grayscale.js"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-   var svg = d3.select("body").selectAll("svg#map");
+    	var svg = d3.select("body").selectAll("svg#map");
         // console.log("svg", svg)
         var g = svg.append("g").attr("id", "plot");
         var map = g.append("g").attr("id", "map");
